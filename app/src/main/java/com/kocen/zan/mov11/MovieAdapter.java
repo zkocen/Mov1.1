@@ -42,24 +42,24 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         //check if existing view is being reused, othervise inflate view
-        View itemListView = convertView;
-        if (itemListView == null){
-            itemListView = LayoutInflater.from(getContext()).inflate(
+        View listItem = convertView;
+        if (listItem == null){
+            listItem = LayoutInflater.from(getContext()).inflate(
                     R.layout.list_item, parent, false);
         }
 
         // Get the {@link Movie} object located at this position in the list
         Movie currentMovie = getItem(position);
         // Find the TextView in the list_item.xml layout with the ID version_name
-        TextView idTextView = (TextView) itemListView.findViewById(R.id.movie_id);
+        TextView idTextView = (TextView) listItem.findViewById(R.id.movie_id);
         // Get the id from the current Movie object and
         // set this text on the name TextView
         String id = Integer.toString(currentMovie.getId());//parse id int to string
         idTextView.setText(id);
 
-        TextView titleTextView = (TextView) itemListView.findViewById(R.id.movie_title);
+        TextView titleTextView = (TextView) listItem.findViewById(R.id.movie_title);
         titleTextView.setText(currentMovie.getTitle());
 
-        return itemListView;
+        return listItem;
     }
 }
