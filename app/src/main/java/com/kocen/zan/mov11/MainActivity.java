@@ -26,6 +26,12 @@ public class MainActivity extends AppCompatActivity {
         movies1.add(new Movie(4, "Terminator 2"));
         movies1.add(new Movie(5, "American Beauty"));
         movies1.add(new Movie(6, "Apolo 13"));
+        movies1.add(new Movie(7, "Apolo 13"));
+        movies1.add(new Movie(8, "Apolo 13"));
+        movies1.add(new Movie(9, "Apolo 13"));
+        movies1.add(new Movie(9, "Apolo 13"));
+        movies1.add(new Movie(9, "Apolo 13"));
+        movies1.add(new Movie(9, "Apolo 13"));
 
 
         // Create an {@link MovieAdapter}, whose data source is a list of
@@ -34,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         MovieAdapter adapter = new MovieAdapter(this, movies1);
 
         //get the ref to the GridView link in layout
-        ListView movieListView = (ListView) findViewById(R.id.list);
+        GridView movieListView = (GridView) findViewById(R.id.list);
         movieListView.setAdapter(adapter);
     }
 }
