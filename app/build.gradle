@@ -17,10 +17,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    repositories {
+        mavenCentral()
+    }
+    buildTypes.each {
+        it.buildConfigField 'String', 'MOVIESDB_KEY_ZAN', getMyApiKey('myApiKey');
+    }
+}
+
+def getMyApiKey(String property){
+    Properties properties = new Properties()
+    properties.load(new FileInputStream("/Users/zan/Documents/MyApiKeys/api_key1_movies"))
+    return "\"" + properties.getProperty(property) +"\""
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.1.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:design:24.1.1'
 }

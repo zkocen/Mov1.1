@@ -6,4 +6,7 @@
 
     <color name="textView1Color">#b0b0b0</color>
     <color name="textView2Color">#a09f9f</color>
+
+    <color name="relLayGridBackground">#000000</color>
+
 </resources>
