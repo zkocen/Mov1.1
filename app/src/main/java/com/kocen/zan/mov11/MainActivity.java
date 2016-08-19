@@ -9,10 +9,12 @@ import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +42,12 @@ public class MainActivity extends AppCompatActivity
     public static final String KEY_VOTE_AVG = "average vote";
     public static final String KEY_PLOT = "plot";
 
+//    //fields for side drawer
+//    Allow your user to change sort order via a setting:
+//    The sort order can be by most popular, or by top rated
+    private String[] mNavigationDrawerItemTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
 
     /**
      * Adapter for the list of movies
@@ -93,6 +101,11 @@ public class MainActivity extends AppCompatActivity
 
         // Get details on the currently active default data network
         NetworkInfo networkInfo = conMan.getActiveNetworkInfo();
+
+        mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.drawer_list);
+
 
         // If there is a network connection, fetch data
         if (networkInfo != null && networkInfo.isConnected()) {

@@ -5,4 +5,10 @@
     <string name="no_earthquakes">No earthquakes found.</string>
     <!-- Error message when there is no internet connectivity [CHAR LIMIT=NONE] -->
     <string name="no_internet_connection">Please connect to the internet.</string>
+
+    <string-array name="navigation_drawer_items_array">
+        <item>Most Popular</item>
+        <item>Top Rated</item>
+        <item>Sth...</item>
+    </string-array>
 </resources>
