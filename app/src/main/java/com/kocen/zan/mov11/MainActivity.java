@@ -4,17 +4,21 @@ package com.kocen.zan.mov11;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderCallbacks<List<Movie>> {
@@ -30,6 +34,12 @@ public class MainActivity extends AppCompatActivity
     private final String POPMDB_REQUEST_URL =
             "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&" +
                     "api_key=" + key;
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_REL_DATE ="release_date";
+    public static final String KEY_POSTER = "movie poster";
+    public static final String KEY_VOTE_AVG = "average vote";
+    public static final String KEY_PLOT = "plot";
+
 
     /**
      * Adapter for the list of movies
@@ -50,7 +60,6 @@ public class MainActivity extends AppCompatActivity
         GridView movieGridView = (GridView) findViewById(R.id.list);
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
-        movieGridView.setEmptyView(mEmptyStateTextView);
 
         // Create a new adapter that takes an empty list of earthquakes as input
         mAdapter = new MovieAdapter(this, new ArrayList<Movie>());
@@ -60,27 +69,25 @@ public class MainActivity extends AppCompatActivity
         // so the list can be populated in the user interface
         movieGridView.setAdapter(mAdapter);
 
-        // Set an item click listener on the GridView, which sends an intent to a web browser
-        // to open a website with more information about the selected earthquake.
-//        movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                // Find the current movie that was clicked on
-//                Movie currentMovie = mAdapter.getItem(position);
-//
-//
-//                // Convert the String URL into a URI object (to pass into the Intent constructor)
-//                //Uri movieUri = Uri.parse(currentMovie.getUrl());
-//
-//                // Create a new intent to view the earthquake URI
-//                //Intent websiteIntent = new Intent(Intent.ACTION_VIEW, movieUri);
-//
-//                // Send the intent to launch a new activity
-//                //startActivity(websiteIntent);
-//            }
-//        });
+//         Set an item click listener on the GridView, which sends an intent to a new activity
+//        which displays more info about the movie
+        movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                // Find the current movie that was clicked on
+                Movie currentMovie = mAdapter.getItem(position);
+                Intent intent = new Intent(MainActivity.this, DetailMovieActivity.class);
+                intent.putExtra(KEY_TITLE, currentMovie.getTitle());
+                intent.putExtra(KEY_REL_DATE, currentMovie.getRelDate());
+                intent.putExtra(KEY_POSTER, currentMovie.getImageUrl());
+                intent.putExtra(KEY_VOTE_AVG, currentMovie.getVoteAvg());
+                intent.putExtra(KEY_PLOT, currentMovie.getPlot());
+                startActivity(intent);
 
-        // Get a reference to the ConnectivityManager to check state of network connectivity
+            }
+        });
+
+//        Get a reference to the ConnectivityManager to check state of network connectivity
         ConnectivityManager conMan = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -102,6 +109,9 @@ public class MainActivity extends AppCompatActivity
             View loadingIndicator = findViewById(R.id.loading_indicator);
             loadingIndicator.setVisibility(View.GONE);
 
+            Toast toast = Toast.makeText(MainActivity.this, "No Internet Connection", Toast.LENGTH_LONG);
+            toast.show();
+            movieGridView.setEmptyView(mEmptyStateTextView);
             // Update empty state with no connection error message
             mEmptyStateTextView.setText(R.string.no_internet_connection);
         }

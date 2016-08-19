@@ -48,18 +48,29 @@ public class QueryUtils {
             // Extract the JSONArray associated with the key called "properties"
             JSONArray moviesArray = baseJsonResponse.getJSONArray("results");
 
+            String baseImage = "http://image.tmdb.org/t/p/";
+            String sizeImage = "w342";
+
             for (int i=0; i<moviesArray.length(); i++){
                 JSONObject currentMovie = moviesArray.getJSONObject(i);
 
                 int mId = currentMovie.getInt("id");
                 String mTitle = currentMovie.getString("original_title");
+                String mImagePath = currentMovie.getString("poster_path");
+
+                String mImageUrl = baseImage + sizeImage + mImagePath;
+
+                String mRelDate = currentMovie.getString("release_date");
+
+                String mAvgVote = Double.toString(currentMovie.getDouble("vote_average"));
+
+                String mPlot = currentMovie.getString("overview");
 
                 // Create a new {@link Movie} object with the id, title, ...
                 // and url from the JSON response.
-                Movie movie = new Movie(mId,mTitle);
+                Movie movie = new Movie(mId, mTitle, mImageUrl, mRelDate, mAvgVote, mPlot);
                 // Add the new {@link Movie} to the list of movies.
                 movies.add(movie);
-                Log.v(LOG_TAG, " " + movie.getTitle() );
             }
 
         } catch (JSONException e) {

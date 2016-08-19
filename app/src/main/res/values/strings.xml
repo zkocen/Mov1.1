@@ -4,5 +4,5 @@
     <!-- Text to display in the list when there are no earthquakes [CHAR LIMIT=NONE] -->
     <string name="no_earthquakes">No earthquakes found.</string>
     <!-- Error message when there is no internet connectivity [CHAR LIMIT=NONE] -->
-    <string name="no_internet_connection">No internet connection.</string>
+    <string name="no_internet_connection">Please connect to the internet.</string>
 </resources>
