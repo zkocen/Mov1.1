@@ -9,11 +9,13 @@ import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 
 public class MainActivity extends AppCompatActivity
@@ -60,6 +67,8 @@ public class MainActivity extends AppCompatActivity
      */
     private TextView mEmptyStateTextView;
 
+    private ArrayList<Movie> mMovies = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +79,7 @@ public class MainActivity extends AppCompatActivity
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
 
-        // Create a new adapter that takes an empty list of earthquakes as input
+        // Create a new adapter that takes an empty list of movies as input
         mAdapter = new MovieAdapter(this, new ArrayList<Movie>());
 
 
@@ -123,6 +132,9 @@ public class MainActivity extends AppCompatActivity
             // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
             // because this activity implements the LoaderCallbacks interface).
             loaderManager.initLoader(MOVIE_LOADER_ID, null, MainActivity.this);
+
+
+
         } else {
             // Otherwise, display error
             // First, hide loading indicator so error message will be visible
@@ -150,17 +162,22 @@ public class MainActivity extends AppCompatActivity
         View loadingIndicator = findViewById(R.id.loading_indicator);
         loadingIndicator.setVisibility(View.GONE);
 
-        // Set empty state text to display "No earthquakes found."
-        mEmptyStateTextView.setText(R.string.no_earthquakes);
+        // Set empty state text to display "No Movies found."
+        mEmptyStateTextView.setText(R.string.no_movies);
 
-        // Clear the adapter of previous earthquake data
+        // Clear the adapter of previous movie data
         mAdapter.clear();
 
-        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+
+        // If there is a valid list of {@link Movie}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
         if (movies != null && !movies.isEmpty()) {
+            //load all movies
             mAdapter.addAll(movies);
+            mMovies.addAll(movies);
         }
+
+
     }
 
     @Override
@@ -169,12 +186,12 @@ public class MainActivity extends AppCompatActivity
         mAdapter.clear();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
 
     @Override
     public void onBackPressed() {
@@ -187,19 +204,19 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings){
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings){
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -208,17 +225,27 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.mostPopularMenuId){
-            Toast toast = Toast.makeText(MainActivity.this, "Most Popular selected",
-                    Toast.LENGTH_SHORT);
-            toast.show();
+            mAdapter.clear();
 
         } else if (id == R.id.topRatedMenuId){
-            Toast toast = Toast.makeText(MainActivity.this, "Top Rated",
-                    Toast.LENGTH_SHORT);
-            toast.show();
+            mAdapter.clear();
+            Collections.sort(mMovies, movieComparator);
+            mAdapter.addAll(mMovies);
+            mAdapter.notifyDataSetChanged();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    //compare average raitings of movies and sort them from highest to lowest
+    Comparator<Movie> movieComparator = new Comparator<Movie>() {
+        @Override
+        public int compare(Movie movie1, Movie movie2) {
+            return Float.parseFloat(movie1.getVoteAvg()) > Float.parseFloat(movie2.getVoteAvg()) ? -1
+                    : Float.parseFloat(movie1.getVoteAvg()) > Float.parseFloat(movie2.getVoteAvg()) ? 1
+                    : 0;
+        }
+    };
 }

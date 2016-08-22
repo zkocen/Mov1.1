@@ -2,7 +2,7 @@
     <string name="app_name">Movies 1.1</string>
 
     <!-- Text to display in the list when there are no earthquakes [CHAR LIMIT=NONE] -->
-    <string name="no_earthquakes">No earthquakes found.</string>
+    <string name="no_movies">No Movies found.</string>
     <!-- Error message when there is no internet connectivity [CHAR LIMIT=NONE] -->
     <string name="no_internet_connection">Please connect to the internet.</string>
 
