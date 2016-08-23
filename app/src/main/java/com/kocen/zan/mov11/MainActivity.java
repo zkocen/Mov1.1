@@ -1,6 +1,7 @@
 package com.kocen.zan.mov11;
 
 
+import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity
      * This really only comes into play if you're using multiple loaders.
      */
     private static final int MOVIE_LOADER_ID = 1;
+    private static final int TOP_MOVIE_LOADER_ID = 2;
 
     private static final String LOG_TAG = MainActivity.class.getName(); //log
     String key = BuildConfig.MOVIESDB_KEY_ZAN;
@@ -42,6 +45,9 @@ public class MainActivity extends AppCompatActivity
     private final String POPMDB_REQUEST_URL =
             "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc"
                     + PAGE_NUM + page_num + "&api_key=" + key;
+    private final String TOPRAT_REQUEST_URL =
+    "http://api.themoviedb.org/3/movie/top_rated?sort_by=popularity.desc"
+            + PAGE_NUM + page_num + "&api_key=" + key;
     public static final String KEY_TITLE = "title";
     public static final String KEY_REL_DATE ="release_date";
     public static final String KEY_POSTER = "movie poster";
@@ -129,7 +135,7 @@ public class MainActivity extends AppCompatActivity
             // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
             // because this activity implements the LoaderCallbacks interface).
             getLoaderManager().initLoader(MOVIE_LOADER_ID, null, MainActivity.this);
-
+            getLoaderManager().initLoader(TOP_MOVIE_LOADER_ID, null, MainActivity.this);
 
         } else {
             // Otherwise, display error
@@ -148,7 +154,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
         // Create a new loader for the given URL
-        return new MovieLoader(MainActivity.this, POPMDB_REQUEST_URL);
+     try {
+         if (i == 1){
+             return new MovieLoader(MainActivity.this, POPMDB_REQUEST_URL);
+         }
+         else if (i == 2){
+            return new MovieLoader(MainActivity.this, TOPRAT_REQUEST_URL);
+         }
+     }catch (Exception e){
+         Log.e(LOG_TAG, "Cannot create loader ", e);
+     }
+        return null;
     }
 
 
@@ -178,6 +194,8 @@ public class MainActivity extends AppCompatActivity
     public void onLoaderReset(Loader<List<Movie>> loader) {
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
+        getLoaderManager().destroyLoader(TOP_MOVIE_LOADER_ID);
+        getLoaderManager().destroyLoader(MOVIE_LOADER_ID);
     }
 
 
@@ -221,13 +239,22 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.mostPopularMenuId){
             mAdapter.clear();
-            getLoaderManager().restartLoader(0,null,this);
+            getLoaderManager().destroyLoader(TOP_MOVIE_LOADER_ID);
+            getLoaderManager().restartLoader(MOVIE_LOADER_ID,null,this);
+            mAdapter.notifyDataSetChanged();
         } else if (id == R.id.MostPopularByTopRatedMenuId){
+//            mAdapter.clear();
+//            getLoaderManager().destroyLoader(TOP_MOVIE_LOADER_ID);
+//            Collections.sort(mMovies, movieComparator);
+//            mAdapter.addAll(mMovies);
+//            mAdapter.notifyDataSetChanged();
+        }
+        else if (id == R.id.topRatedMenuId){
             mAdapter.clear();
-            Collections.sort(mMovies, movieComparator);
+            getLoaderManager().destroyLoader(MOVIE_LOADER_ID);
+            onCreateLoader(TOP_MOVIE_LOADER_ID, null);
             mAdapter.addAll(mMovies);
             mAdapter.notifyDataSetChanged();
-
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -235,13 +262,14 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
     //compare average raitings of movies and sort them from highest to lowest
-    Comparator<Movie> movieComparator = new Comparator<Movie>() {
-        @Override
-        public int compare(Movie movie1, Movie movie2) {
-            return Float.parseFloat(movie1.getVoteAvg()) > Float.parseFloat(movie2.getVoteAvg()) ? -1
-                    : Float.parseFloat(movie1.getVoteAvg()) > Float.parseFloat(movie2.getVoteAvg()) ? 1
-                    : 0;
-        }
-    };
+//    Comparator<Movie> movieComparator = new Comparator<Movie>() {
+//        @Override
+//        public int compare(Movie movie1, Movie movie2) {
+//            return Float.parseFloat(movie1.getVoteAvg()) > Float.parseFloat(movie2.getVoteAvg()) ? -1
+//                    : Float.parseFloat(movie1.getVoteAvg()) > Float.parseFloat(movie2.getVoteAvg()) ? 1
+//                    : 0;
+//        }
+//    };
 }
