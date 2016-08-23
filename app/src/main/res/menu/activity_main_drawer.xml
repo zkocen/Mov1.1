@@ -6,10 +6,10 @@
             android:id="@+id/mostPopularMenuId"
             android:title="Most Popular">
         </item>
-        <item
-            android:id="@+id/MostPopularByTopRatedMenuId"
-            android:title="Top Rated from Most Popular">
-        </item>
+        <!--<item-->
+            <!--android:id="@+id/MostPopularByTopRatedMenuId"-->
+            <!--android:title="Top Rated from Most Popular">-->
+        <!--</item>-->
         <item
             android:id="@+id/topRatedMenuId"
             android:title="Top Rated" >

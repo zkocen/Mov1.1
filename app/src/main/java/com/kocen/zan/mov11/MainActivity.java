@@ -237,22 +237,26 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.mostPopularMenuId){
+        if (id == R.id.mostPopularMenuId) {
             mAdapter.clear();
             getLoaderManager().destroyLoader(TOP_MOVIE_LOADER_ID);
-            getLoaderManager().restartLoader(MOVIE_LOADER_ID,null,this);
+            getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
             mAdapter.notifyDataSetChanged();
-        } else if (id == R.id.MostPopularByTopRatedMenuId){
+        }
+//        } else if (id == R.id.MostPopularByTopRatedMenuId){
 //            mAdapter.clear();
+//
 //            getLoaderManager().destroyLoader(TOP_MOVIE_LOADER_ID);
 //            Collections.sort(mMovies, movieComparator);
 //            mAdapter.addAll(mMovies);
 //            mAdapter.notifyDataSetChanged();
-        }
+//        }
         else if (id == R.id.topRatedMenuId){
+
             mAdapter.clear();
             getLoaderManager().destroyLoader(MOVIE_LOADER_ID);
             onCreateLoader(TOP_MOVIE_LOADER_ID, null);
+            getLoaderManager().getLoader(TOP_MOVIE_LOADER_ID);
             mAdapter.addAll(mMovies);
             mAdapter.notifyDataSetChanged();
         }
@@ -263,7 +267,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-    //compare average raitings of movies and sort them from highest to lowest
+//    compare average raitings of movies and sort them from highest to lowest
 //    Comparator<Movie> movieComparator = new Comparator<Movie>() {
 //        @Override
 //        public int compare(Movie movie1, Movie movie2) {
