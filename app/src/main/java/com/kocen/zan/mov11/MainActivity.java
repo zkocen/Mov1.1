@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.mostPopularMenuId) {
             mAdapter.clear();
-            getLoaderManager().destroyLoader(TOP_MOVIE_LOADER_ID);
+//            getLoaderManager().destroyLoader(TOP_MOVIE_LOADER_ID);
             getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
             mAdapter.notifyDataSetChanged();
         }
@@ -254,11 +254,14 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.topRatedMenuId){
 
             mAdapter.clear();
-            getLoaderManager().destroyLoader(MOVIE_LOADER_ID);
+            getLoaderManager().restartLoader(TOP_MOVIE_LOADER_ID, null, this);
             onCreateLoader(TOP_MOVIE_LOADER_ID, null);
-            getLoaderManager().getLoader(TOP_MOVIE_LOADER_ID);
             mAdapter.addAll(mMovies);
             mAdapter.notifyDataSetChanged();
+      //      getLoaderManager().destroyLoader(MOVIE_LOADER_ID);
+//            onCreateLoader(TOP_MOVIE_LOADER_ID, null);
+//            mAdapter.addAll(mMovies);
+//            mAdapter.notifyDataSetChanged();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
