@@ -7,7 +7,7 @@
             android:title="Most Popular">
         </item>
         <item
-            android:id="@+id/topRatedMenuId"
+            android:id="@+id/MostPopularByTopRatedMenuId"
             android:title="Top Rated">
         </item>
     </group>

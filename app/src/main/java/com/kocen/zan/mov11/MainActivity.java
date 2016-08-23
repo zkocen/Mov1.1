@@ -1,7 +1,6 @@
 package com.kocen.zan.mov11;
 
 
-import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +8,11 @@ import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,18 +21,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 
 public class MainActivity extends AppCompatActivity
         implements LoaderCallbacks<List<Movie>>, NavigationView.OnNavigationItemSelectedListener {
 
-        /**
+    /**
      * Constant value for the movie loader ID. We can choose any integer.
      * This really only comes into play if you're using multiple loaders.
      */
@@ -44,14 +37,17 @@ public class MainActivity extends AppCompatActivity
 
     private static final String LOG_TAG = MainActivity.class.getName(); //log
     String key = BuildConfig.MOVIESDB_KEY_ZAN;
+    public static final String PAGE_NUM = "&page=";
+    public static String page_num = "1";
     private final String POPMDB_REQUEST_URL =
-            "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&" +
-                    "api_key=" + key;
+            "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc"
+                    + PAGE_NUM + page_num + "&api_key=" + key;
     public static final String KEY_TITLE = "title";
     public static final String KEY_REL_DATE ="release_date";
     public static final String KEY_POSTER = "movie poster";
     public static final String KEY_VOTE_AVG = "average vote";
     public static final String KEY_PLOT = "plot";
+
 
 //    //fields for side drawer
 //    Allow your user to change sort order via a setting:
@@ -82,10 +78,10 @@ public class MainActivity extends AppCompatActivity
         // Create a new adapter that takes an empty list of movies as input
         mAdapter = new MovieAdapter(this, new ArrayList<Movie>());
 
-
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         movieGridView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
 
 //         Set an item click listener on the GridView, which sends an intent to a new activity
 //        which displays more info about the movie
@@ -125,14 +121,14 @@ public class MainActivity extends AppCompatActivity
 
         // If there is a network connection, fetch data
         if (networkInfo != null && networkInfo.isConnected()) {
+
             // Get a reference to the LoaderManager, in order to interact with loaders.
-            LoaderManager loaderManager = getLoaderManager();
+
 
             // Initialize the loader. Pass in the int ID constant defined above and pass in null for
             // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
             // because this activity implements the LoaderCallbacks interface).
-            loaderManager.initLoader(MOVIE_LOADER_ID, null, MainActivity.this);
-
+            getLoaderManager().initLoader(MOVIE_LOADER_ID, null, MainActivity.this);
 
 
         } else {
@@ -176,8 +172,6 @@ public class MainActivity extends AppCompatActivity
             mAdapter.addAll(movies);
             mMovies.addAll(movies);
         }
-
-
     }
 
     @Override
@@ -186,7 +180,8 @@ public class MainActivity extends AppCompatActivity
         mAdapter.clear();
     }
 
-//    @Override
+
+    //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.main, menu);
@@ -226,12 +221,13 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.mostPopularMenuId){
             mAdapter.clear();
-
-        } else if (id == R.id.topRatedMenuId){
+            getLoaderManager().restartLoader(0,null,this);
+        } else if (id == R.id.MostPopularByTopRatedMenuId){
             mAdapter.clear();
             Collections.sort(mMovies, movieComparator);
             mAdapter.addAll(mMovies);
             mAdapter.notifyDataSetChanged();
+
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
